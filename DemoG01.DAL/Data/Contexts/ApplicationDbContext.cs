@@ -1,5 +1,8 @@
 ﻿using DemoG01.DAL.Data.Configurations;
-using DemoG01.DAL.Models;
+using DemoG01.DAL.Models.DepartmentModels;
+using DemoG01.DAL.Models.EmployeeModels;
+using DemoG01.DAL.Models.IdentityModels;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,13 +13,14 @@ using System.Threading.Tasks;
 
 namespace DemoG01.DAL.Data.Contexts
 {
-    public class ApplicationDbContext: DbContext
+    public class ApplicationDbContext:IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)
         {
              
         }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees { get; set; }
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    //base.OnConfiguring(optionsBuilder);
@@ -24,7 +28,7 @@ namespace DemoG01.DAL.Data.Contexts
         //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //base.OnModelCreating(modelBuilder);
+             base.OnModelCreating(modelBuilder);
             //modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }

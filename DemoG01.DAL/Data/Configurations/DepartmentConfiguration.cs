@@ -1,4 +1,4 @@
-﻿using DemoG01.DAL.Models;
+﻿using DemoG01.DAL.Models.DepartmentModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -9,17 +9,19 @@ using System.Threading.Tasks;
 
 namespace DemoG01.DAL.Data.Configurations
 {
-    internal class DepartmentConfiguration : IEntityTypeConfiguration<Department>
+    internal class DepartmentConfiguration : BaseEntityConfiguration<Department>,IEntityTypeConfiguration<Department>
     {
-        public void Configure(EntityTypeBuilder<Department> builder)
+        public new void Configure(EntityTypeBuilder<Department> builder)
         {
             //throw new NotImplementedException();
             builder.Property(D => D.Id).UseIdentityColumn(10, 10);
             builder.Property(D => D.Name).HasColumnType("Varchar(20)");
             builder.Property(D => D.Code).HasColumnType("Varchar(20)");
-            builder.Property(D => D.CreatedOn).HasDefaultValueSql("GetDate()");
-            builder.Property(D => D.LastModifiedOn).HasComputedColumnSql("GetDate()");
-
+            base.Configure(builder);
+            builder.HasMany(D => D.Employees)
+                .WithOne(E => E.Department)
+                .HasForeignKey(E => E.DepartmentId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }
