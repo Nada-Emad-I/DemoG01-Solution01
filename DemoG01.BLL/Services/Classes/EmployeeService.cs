@@ -118,7 +118,29 @@ namespace DemoG01.BLL.Services.Classes
         }
         public int updateEmployee(UpdateEmployeeDto employeeDto)
         {
-            _unitOfWork.EmployeeRepository.Update(_mapper.Map<UpdateEmployeeDto, Employee>(employeeDto));
+            var employee = _mapper.Map<UpdateEmployeeDto, Employee>(employeeDto);
+
+            if (employeeDto.Image is not null)
+            {
+
+                if (!string.IsNullOrEmpty(employee.ImageName))
+                {
+                    var filepath = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot", "Files", "Images",
+                        employee.ImageName
+                    );
+                    _attachmentSerivce.Delete(filepath);
+                }
+
+
+                employee.ImageName = _attachmentSerivce.Upload(employeeDto.Image, "Images");
+            }
+
+
+
+            _unitOfWork.EmployeeRepository.Update(employee);
+
             return _unitOfWork.SaveChanges();
         }
 

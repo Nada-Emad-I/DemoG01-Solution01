@@ -55,7 +55,7 @@
                     <td>@employee.EmpGender</td>
 
                     @* @Html.Partial("_ButtonsPartialView",employee.Id) *@
-                    <partial name="_ButtonsPartialView" model="employee.Id"/>
+                    <partial name="_ButtonsPartialView" model="employee.Id.ToString()" />
                     <td>
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@employee.Id">
                             <i class="fas fa-trash"></i> Delete

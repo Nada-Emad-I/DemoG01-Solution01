@@ -1,10 +1,12 @@
 ﻿using DemoG01.BLL.DataTransferObjects.Departments;
 using DemoG01.BLL.Services.Interfaces;
 using DemoG01.PL.ViewModels.Department;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoG01.PL.Controllers
 {
+    [Authorize]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentService _departmentService;

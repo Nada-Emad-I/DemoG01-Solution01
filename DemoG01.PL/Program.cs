@@ -2,10 +2,12 @@ using DemoG01.BLL.Profiles;
 using DemoG01.BLL.Services.Classes;
 using DemoG01.BLL.Services.Interfaces;
 using DemoG01.DAL.Data.Contexts;
+using DemoG01.DAL.Models.IdentityModels;
 using DemoG01.DAL.Repositories.Classes;
 using DemoG01.DAL.Repositories.Departments;
 using DemoG01.DAL.Repositories.Employees;
 using DemoG01.DAL.Repositories.UoW;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,6 +39,30 @@ namespace DemoG01.PL
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped<IAttachmentSerivce, AttachmentSerivce>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options=>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireUppercase=true;
+                options.Password.RequireLowercase=true;
+                options.Password.RequireDigit=true;
+                options.Password.RequireNonAlphanumeric= true;
+                options.Password.RequiredUniqueChars = 3;
+
+                options.User.RequireUniqueEmail= true;
+                
+                options.Lockout.AllowedForNewUsers= true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(2);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            builder.Services.ConfigureApplicationCookie(options=>
+            {
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.LoginPath = "/Account/LogIn";
+                options.LogoutPath = "/Account/LogOut";
+            });
 
             //builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
@@ -54,12 +80,12 @@ namespace DemoG01.PL
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=LogIn}/{id?}");
 
             app.Run();
         }

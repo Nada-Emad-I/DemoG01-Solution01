@@ -6,10 +6,12 @@ using DemoG01.DAL.Models.EmployeeModels;
 using DemoG01.DAL.Models.Shared;
 using DemoG01.PL.ViewModels;
 using DemoG01.PL.ViewModels.Employee;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoG01.PL.Controllers
 {
+    [Authorize]
     public class EmployeesController : Controller
     {
         private readonly IEmployeeService _employeeService;
@@ -144,7 +146,8 @@ namespace DemoG01.PL.Controllers
                         EmployeeType = employeeVM.EmployeeType,
                         IsActive = employeeVM.IsActive,
                         Salary = employeeVM.Salary,
-                        DepartmentId = employeeVM.DepartmentId
+                        DepartmentId = employeeVM.DepartmentId,
+                        Image = employeeVM.Image
                     };
                     int result = _employeeService.updateEmployee(employeeDto);
                     if (result > 0)
