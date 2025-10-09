@@ -52,13 +52,13 @@ namespace DemoG01.PL.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(RoleViewModel viewModel)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var role = new IdentityRole()
                 {
                     Name = viewModel.Name
                 };
-                var result=_roleManager.CreateAsync(role).Result;
+                var result = _roleManager.CreateAsync(role).Result;
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index");
@@ -89,7 +89,7 @@ namespace DemoG01.PL.Controllers
             return View(viewname, roleVM);
         }
         #endregion
-       
+
         #region Edit
         public IActionResult Edit(string? id)
         {
@@ -161,6 +161,7 @@ namespace DemoG01.PL.Controllers
             if (roleId is null) return BadRequest();
             var role = _roleManager.FindByIdAsync(roleId).Result;
             if (role is null) return NotFound();
+
             ViewData["RoleId"] = roleId;
 
             var usersInRole = new List<UserInRoleViewModel>();
@@ -170,8 +171,8 @@ namespace DemoG01.PL.Controllers
             {
                 var userInRole = new UserInRoleViewModel()
                 {
-                    UserId = user.Id,
-                    UserName = user.UserName
+                    UserName = user.UserName,
+                    UserId = user.Id
                 };
                 if (_userManager.IsInRoleAsync(user, role.Name).Result)
                 {
@@ -182,16 +183,16 @@ namespace DemoG01.PL.Controllers
                     userInRole.IsSelected = false;
                 }
                 usersInRole.Add(userInRole);
+
             }
 
-
             return View(usersInRole);
+
         }
         [HttpPost]
-        public IActionResult AddOrDeleteUsers([FromRoute] string? roleId, List<UserInRoleViewModel> users)
+        public IActionResult AddOrDeleteUsers(string? roleId, List<UserInRoleViewModel> users)
         {
             if (roleId is null) return BadRequest();
-
             var role = _roleManager.FindByIdAsync(roleId).Result;
             if (role is null) return NotFound();
             if (ModelState.IsValid)
@@ -200,7 +201,7 @@ namespace DemoG01.PL.Controllers
                 IdentityResult result = null;
                 foreach (var user in users)
                 {
-                    var appUser = _userManager.FindByIdAsync(roleId).Result;
+                    var appUser = _userManager.FindByIdAsync(user.UserId).Result;
                     if (appUser is not null)
                     {
                         if (user.IsSelected && !_userManager.IsInRoleAsync(appUser, role.Name).Result)
@@ -221,15 +222,18 @@ namespace DemoG01.PL.Controllers
                             result = null;
                         }
                     }
-
                 }
                 if (flag)
                 {
                     return RedirectToAction(nameof(Edit), new { id = roleId });
                 }
+
             }
+
+
             return View(users);
-        } 
+
+        }
         #endregion
     }
 }

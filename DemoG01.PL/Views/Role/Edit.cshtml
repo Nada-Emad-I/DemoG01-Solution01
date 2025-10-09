@@ -11,10 +11,10 @@
 <form asp-action="Edit" enctype="multipart/form-data">
     <div asp-validation-summary="All"></div>
 
-    <partial name="PartialViews/CreateEditPartialView" model="@Model" />
+    <partial name="PartialView/CreateEditPartialView" model="@Model" />
 
 
-    <a asp-action="AddOrRemoveUsers" asp-route-roleId="@Model.Id" class="btn btn-success">Add Or Remove User</a>
+    <a asp-action="AddOrDeleteUsers" asp-route-roleId="@Model.Id" class="btn btn-success">Add Or Remove User</a>
 
 
     <input type="submit" value="Save" class="btn btn-primary" />

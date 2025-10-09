@@ -57,7 +57,7 @@ namespace DemoG01.PL
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.ConfigureApplicationCookie(options=>
+            builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.AccessDeniedPath = "/Account/AccessDenied";
                 options.LoginPath = "/Account/LogIn";
